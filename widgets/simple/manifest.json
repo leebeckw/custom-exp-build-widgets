@@ -1,6 +1,6 @@
 {
-  "name": "DnD",
-  "label": "DnD",
+  "name": "simple",
+  "label": "Simple",
   "type": "widget",
   "version": "1.7.0",
   "exbVersion": "1.7.0",
