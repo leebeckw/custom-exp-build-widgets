@@ -1,0 +1,17 @@
+{
+  "name": "sky-DnD",
+  "type": "widget",
+  "version": "1.7.0",
+  "exbVersion": "1.7.0",
+  "author": "Skylar Gering",
+  "description": "A drag and drop widget",
+  "copyright": "",
+  "license": "",
+  "properties": {},
+  "translatedLocales": ["en"],
+  "defaultSize": {
+    "width": 800,
+    "height": 500
+  }
+}
+

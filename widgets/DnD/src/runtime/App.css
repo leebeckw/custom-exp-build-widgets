@@ -1,0 +1,32 @@
+.container {
+    padding: 50px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .box1 {
+    width: 320px;
+    height: 240px;
+  }
+  
+  img {
+    max-width: 320px;
+  }
+  
+  .box2 {
+    width: 320px;
+    height: 240px;
+    background: yellow;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .box3 {
+    width: 320px;
+    height: 240px;
+    background: lightgreen;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
