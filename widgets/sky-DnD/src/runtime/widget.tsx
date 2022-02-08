@@ -11,7 +11,7 @@ import {CSS} from '@dnd-kit/utilities';
 // Defining droppable
 function Droppable(props) {
   const {isOver, setNodeRef} = useDroppable({
-    id: 'droppable',
+    id: props.id,
   });
   const style = {
     color: isOver ? 'green' : 'red',
@@ -27,7 +27,7 @@ function Droppable(props) {
 // Defining Draggable
 function Draggable(props) {
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
-    id: 'draggable',
+    id: props.id,
   });
   const style = transform ? {
    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
@@ -44,29 +44,46 @@ function Draggable(props) {
 
 // Actual widget code
 export default class Widget extends React.PureComponent<AllWidgetProps<any>, any> {
+  containers = ['A', 'B', 'C'];
   constructor(props) {
     super(props);
     this.state = {
-      isDropped: false
+      parent: null
     };
   }
   draggableMarkup = (
-    <Draggable>Drag me</Draggable>
+    <Draggable id = "draggable">Drag me</Draggable>
   );
   
   render() {
     return (
       <DndContext onDragEnd={handleDragEnd}>
-        {!this.state.isDropped ? this.draggableMarkup : null}
-        <Droppable>
-          {this.state.isDropped ? this.draggableMarkup : 'Drop here'}
-        </Droppable>
+        {this.state.parent === null ? this.draggableMarkup: null}
+        {this.containers.map((id) => (
+          <Droppable key = {id} id={id}>
+            {this.state.parent === id ? this.draggableMarkup : 'Drop here'}
+          </Droppable>
+        ))}
       </DndContext>
+      // <DndContext onDragEnd={handleDragEnd}>
+      //   {!this.state.isDropped ? this.draggableMarkup : null}
+      //   <Droppable>
+      //     {this.state.isDropped ? this.draggableMarkup : 'Drop here'}
+      //   </Droppable>
+      // </DndContext>
     );
     function handleDragEnd(event) {
-      if (event.over && event.over.id === 'droppable') {
-        this.setState({isDropped: true});
+      const {over} = event;
+      //(over ? this.setState({parent : over.id}) : this.setState({parent : null}));
+      if (over){
+        this.setState({parent : over.id});
       }
+      else {
+        this.setState({parent : null});
+      }
+      // if (event.over && event.over.id === 'droppable') {
+      //   this.setState({isDropped: true});
+      // }
     }
     
   }
