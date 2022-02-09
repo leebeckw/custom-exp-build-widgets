@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+// uuid library (universally unique identifier)
+// for unique items
 import { v4 as uuid } from 'uuid';
 
+// unique ids for the items
 const itemsFromBackend = [
   { id: uuid(), content: "Item 1" },
   { id: uuid(), content: "Item 2" },
   { id: uuid(), content: "Item 3" }
 ];
 
+// unique column spaces
 const columnsFromBackend = {
   [uuid()]: {
-    name: "Requested",
+    name: "To-do",
     items: itemsFromBackend
-  },
-  [uuid()]: {
-    name: "To do",
-    items: []
   },
   [uuid()]: {
     name: "In Progress",
@@ -27,17 +27,26 @@ const columnsFromBackend = {
   }
 };
 
+// When dragged
 const onDragEnd = (result, columns, setColumns) => {
   if (!result.destination) return;
   const { source, destination } = result;
 
+  // If the source and destination of an item is different
   if (source.droppableId !== destination.droppableId) {
     const sourceColumn = columns[source.droppableId];
     const destColumn = columns[destination.droppableId];
     const sourceItems = [...sourceColumn.items];
     const destItems = [...destColumn.items];
+
+    //removes the first index of the array (so things can move up)
     const [removed] = sourceItems.splice(source.index, 1);
+    
+    // Insert removed element
     destItems.splice(destination.index, 0, removed);
+
+    // Set the columns with the new items and order
+    // ... means to expand the argument or variable
     setColumns({
       ...columns,
       [source.droppableId]: {
@@ -49,7 +58,10 @@ const onDragEnd = (result, columns, setColumns) => {
         items: destItems
       }
     });
-  } else {
+  }
+  
+  // If source and destination is the same
+  else {
     const column = columns[source.droppableId];
     const copiedItems = [...column.items];
     const [removed] = copiedItems.splice(source.index, 1);
@@ -65,7 +77,9 @@ const onDragEnd = (result, columns, setColumns) => {
 };
 
 function App() {
+  // Use the solumns from the constant declared earlier
   const [columns, setColumns] = useState(columnsFromBackend);
+
   return (
     <div style={{ display: "flex", justifyContent: "center", height: "100%" }}>
       <DragDropContext
