@@ -1,22 +1,20 @@
 {
-  "name": "view-layers-toggle-2",
-  "label": "Dropdown",
+  "name": "demo-function-2",
+  "label": "dropdown test",
   "type": "widget",
   "version": "1.7.0",
   "exbVersion": "1.7.0",
   "author": "Esri R&D Center Beijing",
-  "description": "This widget demonstrates how to create a dropdown toggle to allow viewing different layers on the map.",
+  "description": "This is the widget used in developer documentation",
   "copyright": "",
-  "dependency": [
-    "jimu-arcgis"
-  ],
   "license": "http://www.apache.org/licenses/LICENSE-2.0",
   "properties": {},
   "translatedLocales": [
-    "en"
+    "en",
+    "zh-cn"
   ],
   "defaultSize": {
-    "width": 300,
+    "width": 100,
     "height": 100
   }
 }

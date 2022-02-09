@@ -1,4 +1,4 @@
 export default {
-  _widgetLabel: 'View Layers Toggle',
+  _widgetLabel: 'Dropdown',
   viewLayer: "View Layer",
 };
