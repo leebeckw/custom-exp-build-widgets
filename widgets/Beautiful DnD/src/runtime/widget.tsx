@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import FeatureLayer from "esri/layers/FeatureLayer";
 import { JimuMapViewComponent, JimuMapView, loadArcGISJSAPIModules } from "jimu-arcgis";
-import { AllWidgetProps, jsx, css } from "jimu-core";
+import { AllWidgetProps, jsx, css, React } from "jimu-core";
 import { IMConfig } from "../config";
 // uuid library (universally unique identifier)
 // for unique items
 import { v4 as uuid } from 'uuid';
+
+const {useState} = React;
 
 interface IState {
   jimuMapView: JimuMapView;
