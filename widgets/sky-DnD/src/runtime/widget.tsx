@@ -1,6 +1,7 @@
 /** @jsx jsx */
-import { React, AllWidgetProps, jsx } from "jimu-core";
+import {AllWidgetProps, jsx } from "jimu-core";
 import {DndContext} from "@dnd-kit/core";
+import React, { useState } from "react"
 import {useDraggable} from '@dnd-kit/core';
 import {useDroppable} from '@dnd-kit/core';
 //import {Draggable} from './Draggable.js';
@@ -42,50 +43,82 @@ function Draggable(props) {
   );
 }
 
-// Actual widget code
-export default class Widget extends React.PureComponent<AllWidgetProps<any>, any> {
-  containers = ['A', 'B', 'C'];
-  constructor(props) {
-    super(props);
-    this.state = {
-      parent: null
-    };
-  }
-  draggableMarkup = (
-    <Draggable id = "draggable">Drag me</Draggable>
+
+function App() {
+  const containers = ['A', 'B', 'C'];
+  const [parent, setParent] = useState(null);
+  const draggableMarkup = (
+    <Draggable id="draggable">Drag me</Draggable>
   );
-  
-  render() {
-    return (
-      <DndContext onDragEnd={handleDragEnd}>
-        {this.state.parent === null ? this.draggableMarkup: null}
-        {this.containers.map((id) => (
-          <Droppable key = {id} id={id}>
-            {this.state.parent === id ? this.draggableMarkup : 'Drop here'}
-          </Droppable>
-        ))}
-      </DndContext>
-      // <DndContext onDragEnd={handleDragEnd}>
-      //   {!this.state.isDropped ? this.draggableMarkup : null}
-      //   <Droppable>
-      //     {this.state.isDropped ? this.draggableMarkup : 'Drop here'}
-      //   </Droppable>
-      // </DndContext>
-    );
-    function handleDragEnd(event) {
-      const {over} = event;
-      //(over ? this.setState({parent : over.id}) : this.setState({parent : null}));
-      if (over){
-        this.setState({parent : over.id});
-      }
-      else {
-        this.setState({parent : null});
-      }
-      // if (event.over && event.over.id === 'droppable') {
-      //   this.setState({isDropped: true});
-      // }
-    }
-    
+
+  return (
+    <DndContext onDragEnd={handleDragEnd}>
+      {parent === null ? draggableMarkup : null}
+
+      {containers.map((id) => (
+        // We updated the Droppable component so it would accept an `id`
+        // prop and pass it to `useDroppable`
+        <Droppable key={id} id={id}>
+          {parent === id ? draggableMarkup : 'Drop here'}
+        </Droppable>
+      ))}
+    </DndContext>
+  );
+
+  function handleDragEnd(event) {
+    const {over} = event;
+
+    // If the item is dropped over a container, set it as the parent
+    // otherwise reset the parent to `null`
+    setParent(over ? over.id : null);
   }
-}
+};
+
+export default App;
+// Actual widget code
+// export default class Widget extends React.PureComponent<AllWidgetProps<any>, any> {
+//   containers = ['A', 'B', 'C'];
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       parent: null
+//     };
+//   }
+//   draggableMarkup = (
+//     <Draggable id = "draggable">Drag me</Draggable>
+//   );
+  
+//   render() {
+//     return (
+//       <DndContext onDragEnd={handleDragEnd}>
+//         {this.state.parent === null ? this.draggableMarkup: null}
+//         {this.containers.map((id) => (
+//           <Droppable key = {id} id={id}>
+//             {this.state.parent === id ? this.draggableMarkup : 'Drop here'}
+//           </Droppable>
+//         ))}
+//       </DndContext>
+//       // <DndContext onDragEnd={handleDragEnd}>
+//       //   {!this.state.isDropped ? this.draggableMarkup : null}
+//       //   <Droppable>
+//       //     {this.state.isDropped ? this.draggableMarkup : 'Drop here'}
+//       //   </Droppable>
+//       // </DndContext>
+//     );
+//     function handleDragEnd(event) {
+//       const {over} = event;
+//       //(over ? this.setState({parent : over.id}) : this.setState({parent : null}));
+//       if (over){
+//         this.setState({parent : over.id});
+//       }
+//       else {
+//         this.setState({parent : null});
+//       }
+//       // if (event.over && event.over.id === 'droppable') {
+//       //   this.setState({isDropped: true});
+//       // }
+//     }
+    
+//   }
+// }
 
