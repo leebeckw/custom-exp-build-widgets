@@ -1,6 +1,6 @@
 // import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import FeatureLayer from "esri/layers/FeatureLayer";
+import { FeatureLayer } from "esri/layers/FeatureLayer";
 import { JimuMapViewComponent, JimuMapView, loadArcGISJSAPIModules } from "jimu-arcgis";
 import { AllWidgetProps, jsx, css, React } from "jimu-core";
 import { IMConfig } from "../config";
@@ -107,6 +107,13 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
   const [jimuMapView, setJimuMapView] = useState(null);
   const [featureLayerOnMap, setFeatureLayerOnMap] = useState(null);
 
+  
+  const activeViewChangeHandler = (jmv: JimuMapView) => {
+    if (jmv) {
+      setJimuMapView(jmv);
+    }
+  };
+
   // const featureLayer = new FeatureLayer({
   //   url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads_Styled/FeatureServer/0"
   // });
@@ -164,6 +171,15 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
           items: copiedItems
         }
       });
+
+      // // create a new FeatureLayer
+      // const layer = new FeatureLayer({
+      //   url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/worldcities/FeatureServer"
+      // });
+
+      // // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
+      // this.state.jimuMapView.view.map.add(layer);
+
     }
   };
 
@@ -173,10 +189,10 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
 
         {props.hasOwnProperty("useMapWidgetIds") &&
         props.useMapWidgetIds &&
-          props.useMapWidgetIds.length === 1 && (
+          props.useMapWidgetIds.length[0] && (
             <JimuMapViewComponent
-              useMapWidgetId={props.useMapWidgetIds?.[0]}
-              onActiveViewChange={onDragEnd}
+              useMapWidgetId={props.useMapWidgetIds}
+              onActiveViewChange={activeViewChangeHandler}
             />
           )}
 
