@@ -1,123 +1,57 @@
-// import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { FeatureLayer } from "esri/layers/FeatureLayer";
 import { JimuMapViewComponent, JimuMapView, loadArcGISJSAPIModules } from "jimu-arcgis";
+import { TextArea } from "jimu-ui";
 import { AllWidgetProps, jsx, css, React } from "jimu-core";
 import { IMConfig } from "../config";
-// uuid library (universally unique identifier)
-// for unique items
 import { v4 as uuid } from 'uuid';
 
 const {useState} = React;
 
-interface IState {
-  jimuMapView: JimuMapView;
-  featureLayerOnMap: FeatureLayer;
-  featureServiceUrlInput: string;
-}
-
-// unique ids for the items
+// unique ids for DnD Items
 const itemsFromBackend = [
   { id: uuid(), content: "Item 1" },
   { id: uuid(), content: "Item 2" },
   { id: uuid(), content: "Item 3" }
 ];
 
-// unique column spaces
+// Unique columns for DnD
 const columnsFromBackend = {
   [uuid()]: {
-    name: "To-do",
+    name: "Answer Bank",
     items: itemsFromBackend
   },
   [uuid()]: {
-    name: "In Progress",
-    items: []
-  },
-  [uuid()]: {
-    name: "Done",
+    name: "Blank",
     items: []
   }
 };
 
 
-// When dragged
-// const onDragEnd = (result, columns, setColumns) => {
-//   if (!result.destination) return;
-//   const { source, destination } = result;
-
-//   // If the source and destination of an item is different
-//   if (source.droppableId !== destination.droppableId) {
-//     const sourceColumn = columns[source.droppableId];
-//     const destColumn = columns[destination.droppableId];
-//     const sourceItems = [...sourceColumn.items];
-//     const destItems = [...destColumn.items];
-
-//     //removes the first index of the array (so things can move up)
-//     const [removed] = sourceItems.splice(source.index, 1);
-    
-//     // Insert removed element
-//     destItems.splice(destination.index, 0, removed);
-
-//     // Set the columns with the new items and order
-//     // ... means to expand the argument or variable
-//     setColumns({
-//       ...columns,
-//       [source.droppableId]: {
-//         ...sourceColumn,
-//         items: sourceItems
-//       },
-//       [destination.droppableId]: {
-//         ...destColumn,
-//         items: destItems
-//       }
-//     });
-
-//     // Create and add the new Feature Layer
-//     const featureLayer = new FeatureLayer({
-//       url: evt.target.value,
-//     });
-//     JimuMapView.view.map.add(featureLayer);
-//     setFeatureLayerOnMap({
-//       featureLayerOnMap: featureLayer,
-//     });
-
-//   }
-  
-//   // If source and destination is the same
-//   else {
-//     const column = columns[source.droppableId];
-//     const copiedItems = [...column.items];
-//     const [removed] = copiedItems.splice(source.index, 1);
-//     copiedItems.splice(destination.index, 0, removed);
-//     setColumns({
-//       ...columns,
-//       [source.droppableId]: {
-//         ...column,
-//         items: copiedItems
-//       }
-//     });
-//   }
-
-
-// };
-
 export default function Widget(props: AllWidgetProps<IMConfig>) {
-  // Use the solumns from the constant declared earlier
+  // Setting states using hooks
   const [columns, setColumns] = useState(columnsFromBackend);
   const [jimuMapView, setJimuMapView] = useState(null);
   const [featureLayerOnMap, setFeatureLayerOnMap] = useState(null);
+  const [isUnlocked, setIsUnlocked] = useState(null);
 
-  
+  // determine if column is locked or not
+
+  // Setting up active view change handler
   const activeViewChangeHandler = (jmv: JimuMapView) => {
     if (jmv) {
       setJimuMapView(jmv);
     }
   };
 
+  // TODO: Trying to add feature layer
+  // When the FeatureLayer function is called, we get a "Failed to Load" error
+  // --------Comment this portion out to see what DnD looks like----------
   // const featureLayer = new FeatureLayer({
   //   url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads_Styled/FeatureServer/0"
   // });
   // jimuMapView.view.map.add(featureLayer);
+  //---------------------------------------------------------------------
 
   // When dragged
   const onDragEnd = (result, columns, setColumns) => {
@@ -138,7 +72,6 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
       destItems.splice(destination.index, 0, removed);
 
       // Set the columns with the new items and order
-      // ... means to expand the argument or variable
       setColumns({
         ...columns,
         [source.droppableId]: {
@@ -150,12 +83,6 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
           items: destItems
         }
       });
-
-      // // Create and add the new Feature Layer
-      // jimuMapView.view.map.add(featureLayer);
-      // setFeatureLayerOnMap({
-      //   featureLayerOnMap: featureLayer,
-      // });
     }
     
     // If source and destination is the same
@@ -171,22 +98,12 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
           items: copiedItems
         }
       });
-
-      // // create a new FeatureLayer
-      // const layer = new FeatureLayer({
-      //   url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/worldcities/FeatureServer"
-      // });
-
-      // // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
-      // this.state.jimuMapView.view.map.add(layer);
-
     }
   };
 
 
   return (
     <div className="widget-dnd map" style={{ display: "flex", justifyContent: "center", height: "100%" }}>
-
         {props.hasOwnProperty("useMapWidgetIds") &&
         props.useMapWidgetIds &&
           props.useMapWidgetIds.length[0] && (
@@ -195,9 +112,7 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
               onActiveViewChange={activeViewChangeHandler}
             />
           )}
-
-
-
+      
       <DragDropContext
         onDragEnd={result => onDragEnd(result, columns, setColumns)}
       >
@@ -223,9 +138,9 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
                           background: snapshot.isDraggingOver
                             ? "lightblue"
                             : "lightgrey",
-                          padding: 4,
+                          padding: 10,
                           width: 250,
-                          minHeight: 500
+                          minHeight: 250
                         }}
                       >
                         {column.items.map((item, index) => {
@@ -273,5 +188,3 @@ export default function Widget(props: AllWidgetProps<IMConfig>) {
     </div>
   );
 }
-
-// export default App;
