@@ -1,8 +1,26 @@
+/** @jsx jsx */
+import { React, AllWidgetProps, jsx } from "jimu-core";
+import { JimuMapViewComponent, JimuMapView } from "jimu-arcgis";
+import FeatureLayer from "esri/layers/FeatureLayer";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { FeatureLayer } from "esri/layers/FeatureLayer";
-import { JimuMapViewComponent, JimuMapView, loadArcGISJSAPIModules } from "jimu-arcgis";
-import { AllWidgetProps, jsx, css, React } from "jimu-core";
-import ReactDOM from "react-dom";
+// uuid library (universally unique identifier)
+// for unique items
+// import { v4 as uuid } from 'uuid';
+
+// // unique ids for the items
+// const itemsFromBackend = [
+//   { id: uuid(), content: "Item 1" },
+//   { id: uuid(), content: "Item 2" },
+//   { id: uuid(), content: "Item 3" }
+// ];
+
+// // unique column spaces
+// const columnsFromBackend = {
+//   [uuid()]: {
+//     name: "First",
+//     items: itemsFromBackend
+//   }
+// };
 
 const getItems = (count) =>
   Array.from({ length: count }, (v, k) => k).map((k) => ({
@@ -10,28 +28,11 @@ const getItems = (count) =>
     content: `item ${k}`
   }));
 
-// a little function to help us with reordering the result
+  // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-
-  return result;
-};
-
-/**
- * Moves an item from one list to another list.
- */
-const move = (source, destination, droppableSource, droppableDestination) => {
-  const sourceClone = Array.from(source);
-  const destClone = Array.from(destination);
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-  destClone.splice(droppableDestination.index, 0, removed);
-
-  const result = {};
-  result[droppableSource.droppableId] = sourceClone;
-  result[droppableDestination.droppableId] = destClone;
 
   return result;
 };
@@ -57,8 +58,13 @@ const getListStyle = (isDraggingOver) => ({
   width: 250
 });
 
-
 export default class Widget extends React.PureComponent<AllWidgetProps<any>, any> {
+  // state = {
+  //   jimuMapView: null,
+  //   columns: columnsFromBackend,
+  //   items: null
+  // };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -67,22 +73,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
     };
     this.onDragEnd = this.onDragEnd.bind(this)
   }
-
-
-  /**
-   * A semi-generic way to handle multiple lists. Matches
-   * the IDs of the droppable container to the names of the
-   * source arrays stored in the state.
-   */
-  // id2List = {
-  //   droppable: "items",
-  // };
-
-  // getList = (id) => this.state[this.id2List[id]];
-
-  // layer = FeatureLayer({
-  //   url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads_Styled/FeatureServer/0"
-  // });
 
   onDragEnd(result) {
     // const { source, destination } = result;
@@ -100,36 +90,34 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
 
     this.setState({ items });
 
-  
-    // // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
-    // this.state.jimuMapView.view.map.add(layer);
- 
+    // create a new FeatureLayer
+    const layer = new FeatureLayer({
+      url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/worldcities/FeatureServer"
+    });
+
+    // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
+    this.state.jimuMapView.view.map.add(layer);
+
+    
   };
+  
 
   activeViewChangeHandler = (jmv: JimuMapView) => {
     if (jmv) {
       this.setState({
         jimuMapView: jmv
       });
-
     }
-  }
+  };
 
-  // Normally you would want to split things out into separate components.
-  // But in this example everything is just done in one place for simplicity
+
   render() {
     return (
-      <div className="widget-starter jimu-widget"> 
-       {this.props.hasOwnProperty("useMapWidgetIds") &&
-         this.props.useMapWidgetIds &&
-          this.props.useMapWidgetIds[0] && (
-           <JimuMapViewComponent
-             useMapWidgetId={this.props.useMapWidgetIds?.[0]}
-             onActiveViewChange={this.activeViewChangeHandler}
-           />
-         )
-       }
-       <div>
+      <div className="widget-starter jimu-widget">
+        {this.props.hasOwnProperty("useMapWidgetIds") && this.props.useMapWidgetIds && this.props.useMapWidgetIds[0] && (
+          <JimuMapViewComponent useMapWidgetId={this.props.useMapWidgetIds?.[0]} onActiveViewChange={this.activeViewChangeHandler} />
+        )}
+            <div>
           <DragDropContext onDragEnd={result => this.onDragEnd(result)}>
             <Droppable droppableId="droppable">
               {(provided, snapshot) => (
@@ -161,7 +149,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
             </Droppable>
         </DragDropContext>
       </div>
-      </div>
+          </div>
     );
   }
 }
+

@@ -10,7 +10,8 @@ import { v4 as uuid } from 'uuid';
 // unique ids for the items
 const itemsFromBackend = [
   { id: uuid(), content: "Item 1" },
-  { id: uuid(), content: "Item 2" }
+  { id: uuid(), content: "Item 2" },
+  { id: uuid(), content: "Item 3" }
 ];
 
 // unique column spaces
@@ -18,75 +19,53 @@ const columnsFromBackend = {
   [uuid()]: {
     name: "First",
     items: itemsFromBackend
-  },
-  [uuid()]: {
-    name: "Second",
-    items: []
-  },
+  }
 };
 
 export default class Widget extends React.PureComponent<AllWidgetProps<any>, any> {
-  state = {
-    jimuMapView: null,
-    columns: columnsFromBackend,
-    items: null
-  };
+  // state = {
+  //   jimuMapView: null,
+  //   columns: columnsFromBackend,
+  //   items: null
+  // };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      jimuMapView: null,
+      columns: columnsFromBackend,
+      items: null
+    };
+    this.onDragEnd = this.onDragEnd.bind(this)
+  }
 
   onDragEnd = (result, columns) => {
     if (!result.destination) return;
     const { source, destination } = result;
-  
-    // If the source and destination of an item is different
-    if (source.droppableId !== destination.droppableId) {
-      const sourceColumn = columns[source.droppableId];
-      const destColumn = columns[destination.droppableId];
-      const sourceItems = [...sourceColumn.items];
-      const destItems = [...destColumn.items];
-  
-      //removes the first index of the array (so things can move up)
-      const [removed] = sourceItems.splice(source.index, 1);
-      
-      // Insert removed element
-      destItems.splice(destination.index, 0, removed);
-  
-      // Set the columns with the new items and order
-      // ... means to expand the argument or variable
-      this.setState({
-        ...this.state.columns,
-        [source.droppableId]: {
-          ...sourceColumn,
-          items: sourceItems
-        },
-        [destination.droppableId]: {
-          ...destColumn,
-          items: destItems
-        }
-      });
-    }
     
-    // If source and destination is the same
-    else {
-      const column = this.state.columns[source.droppableId];
-      const copiedItems = [...column.items];
-      const [removed] = copiedItems.splice(source.index, 1);
-      copiedItems.splice(destination.index, 0, removed);
-      this.setState({
-        ...this.state.columns,
-        [source.droppableId]: {
-          ...column,
-          items: copiedItems
-        }
-      });
+    const column = columns[source.droppableId];
+    const copiedItems = [...column.items];
+    const [removed] = copiedItems.splice(source.index, 1);
+    copiedItems.splice(destination.index, 0, removed);
 
-      // create a new FeatureLayer
-      const layer = new FeatureLayer({
-        url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/worldcities/FeatureServer"
-      });
+    this.setState({
+      // ...columns,
+      // [source.droppableId]: {
+      //   ...column,
+      //   items: copiedItems
+      // }
+      copiedItems
+    });
 
-      // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
-      this.state.jimuMapView.view.map.add(layer);
+    // create a new FeatureLayer
+    const layer = new FeatureLayer({
+      url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/worldcities/FeatureServer"
+    });
 
-    }
+    // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
+    this.state.jimuMapView.view.map.add(layer);
+
+    
   };
   
 
@@ -98,17 +77,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
     }
   };
 
-  // formSubmit = (evt) => {
-  //   evt.preventDefault();
-
-  //   // create a new FeatureLayer
-  //   const layer = new FeatureLayer({
-  //     url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/worldcities/FeatureServer"
-  //   });
-
-  //   // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
-  //   this.state.jimuMapView.view.map.add(layer);
-  // };
 
   render() {
     return (
@@ -116,8 +84,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
         {this.props.hasOwnProperty("useMapWidgetIds") && this.props.useMapWidgetIds && this.props.useMapWidgetIds[0] && (
           <JimuMapViewComponent useMapWidgetId={this.props.useMapWidgetIds?.[0]} onActiveViewChange={this.activeViewChangeHandler} />
         )}
-
-          <div>
             <DragDropContext onDragEnd={result => this.onDragEnd(result, this.state.columns)}>
           {Object.entries(this.state.columns).map(([columnId, column], index) => {
             return (
@@ -189,7 +155,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
           })}
         </DragDropContext>
           </div>
-      </div>
     );
   }
 }
