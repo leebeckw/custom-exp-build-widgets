@@ -77,22 +77,22 @@ const reorder = (list, startIndex, endIndex) => {
 const grid = 8;
 
 
-// TODO: if draggable area is locked, change color
-const getItemStyle = (isDragging, draggableStyle) => ({
+const getItemStyle = (isLocked,isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: "none",
   padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? "pink" : "grey",
+  background: isLocked ? "#93C572" : 
+                         isDragging ? "#5F9EA0" : "grey",
 
   // styles we need to apply on draggables
   ...draggableStyle
 });
 
-const getListStyle = (isDraggingOver) => ({
-  background: isDraggingOver ? "lightblue" : "lightgrey",
+const getListStyle = (isLocked, isDraggingOver) => ({
+  background: isLocked? "lightgrey" : "lightgrey",
   padding: grid,
   width: 250
 });
@@ -130,7 +130,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
       result.destination.index
     );
 
-    this.setState({items});
+    this.setState({items: items});
 
     if (checkArraySimilar(items, 1.0)) {
       // create a new FeatureLayer
@@ -170,7 +170,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
+                  style={getListStyle(this.state.isLocked, snapshot.isDraggingOver)}
                 >
                   {this.state.items.map((item, index) => (
                     <Draggable
@@ -184,6 +184,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           style={getItemStyle(
+                            this.state.isLocked,
                             snapshot.isDragging,
                             provided.draggableProps.style
                           )}
