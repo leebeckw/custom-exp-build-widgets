@@ -60,7 +60,6 @@ const getItems = (instructions) => {
       shuffled_arr.sort(() => Math.random() - 0.5);
     };
   };
-  console.log("HELLO!!!!!");
   return shuffled_arr
 };
 
