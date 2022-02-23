@@ -1,2 +1,9 @@
-{}
-
+{
+    "instructText": [
+        "For every square mile",
+        "If elevation higher than 0",
+        "Color tile shade of green",
+        "else",
+        "Color the tile a shade of gray"
+    ]
+}

@@ -3,28 +3,8 @@ import { React, AllWidgetProps, jsx } from "jimu-core";
 import { JimuMapViewComponent, JimuMapView } from "jimu-arcgis";
 import FeatureLayer from "esri/layers/FeatureLayer";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { random } from Math;
-
-
-// const shuffle = (array) => {
-//   let currentIndex = array.length;
-//   let temporaryValue;
-//   let randomIndex;
-
-//   // While there remain elements to shuffle...
-//   while (0 !== currentIndex) {
-//     // Pick a remaining element...
-//     randomIndex = Math.floor(Math.random() * currentIndex);
-//     currentIndex -= 1;
-
-//     // And swap it with the current element.
-//     temporaryValue = array[currentIndex];
-//     array[currentIndex] = array[randomIndex];
-//     array[randomIndex] = temporaryValue;
-//   }
-
-//   return array;
-// };
+import { IMConfig } from "../config";
+import defaultMessages from "./translations/default";
 
 
 // Checks if array is properly shuffled for greater than 50% shuffled
@@ -96,7 +76,12 @@ const getListStyle = (isLocked, isDraggingOver) => ({
   width: 250
 });
 
-export default class Widget extends React.PureComponent<AllWidgetProps<any>, any> {
+interface IState {
+  jimuMapView: JimuMapView;
+  featureLayerOnMap: FeatureLayer;
+}
+
+export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>, IState> {
   // state = {
   //   jimuMapView: null,
   //   columns: columnsFromBackend,
@@ -107,17 +92,23 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
     super(props);
     this.state = {
       jimuMapView: null,
-      items: getItems(["Grab two slices of bread",
-                       "Put peanut butter on both slices",
-                       "Put jelly in the middle of both slices",
-                       "Put slices together"]),
+      // items: getItems(["For every square mile",
+      //                   "If elevation higher than 0",
+      //                   "Color tile shade of green",
+      //                   "else",
+      //                   "Color the tile a shade of gray"]),
+      items: getItems([ "For every square mile",
+                        "If elevation higher than 0",
+                        "Color tile shade of green",
+                        "else",
+                        "Color the tile a shade of gray"]),
       isLocked: false
     };
     this.onDragEnd = this.onDragEnd.bind(this)
   }
 
-  onDragEnd(result) {
 
+  onDragEnd(result) {
     // dropped outside the list
     if (!result.destination) {
       return;
@@ -134,7 +125,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
     if (checkArraySimilar(items, 1.0)) {
       // create a new FeatureLayer
       const layer = new FeatureLayer({
-        url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/Buffer_of_1750_from_LA/FeatureServer"
+        url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/Simplified_Global_Elevation/FeatureServer"
       });
 
       // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
@@ -162,7 +153,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
         {this.props.hasOwnProperty("useMapWidgetIds") && this.props.useMapWidgetIds && this.props.useMapWidgetIds[0] && (
           <JimuMapViewComponent useMapWidgetId={this.props.useMapWidgetIds?.[0]} onActiveViewChange={this.activeViewChangeHandler} />
         )}
-            <div>
+          <div>
           <DragDropContext onDragEnd={result => this.onDragEnd(result)}>
             <Droppable droppableId="droppable">
               {(provided, snapshot) => (
@@ -199,7 +190,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<any>, any
             </Droppable>
         </DragDropContext>
       </div>
-          </div>
+    </div>
     );
   }
 }
