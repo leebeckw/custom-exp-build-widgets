@@ -23,7 +23,8 @@ export default class Setting extends React.PureComponent<
     console.log(
       "TYPEOF undefined",
       typeof this.props.config?.instructText === undefined,
-      typeof this.props.config?.layerUrls === undefined
+      typeof this.props.config?.layerUrls === undefined,
+      typeof this.props.config?.textChange === undefined,
     );
 
     this.state = {
@@ -52,9 +53,17 @@ export default class Setting extends React.PureComponent<
       id: this.props.id,
       config: this.props.config.set(
         "instructText",
-        event.target.value.split("\n")
+        event.target.value.split("\n"),
       ),
     });
+
+    // this.props.onSettingChange({
+    //   id: this.props.id,
+    //   config: this.props.config.set(
+    //     "textChange",
+    //     true,
+    //   ),
+    // });
   };
 
   onLayerTextChange = (event) => {

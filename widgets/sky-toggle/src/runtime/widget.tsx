@@ -104,11 +104,6 @@ export default class ViewLayersToggle extends React.PureComponent<
             })}
           </select>
         </p>
-
-        <form>
-          <label>{this.props.config.layerUrls}</label>
-          <label>{this.props.config?.layerUrls}</label>
-        </form>
       </div>
     );
   }

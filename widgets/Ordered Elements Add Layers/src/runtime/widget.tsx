@@ -6,6 +6,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { IMConfig } from "../config";
 import defaultMessages from "./translations/default";
 import { Button } from 'jimu-ui';
+import { left } from "@popperjs/core";
 
 
 // Checks if array is properly shuffled for greater than 50% shuffled
@@ -25,6 +26,16 @@ const checkArraySimilar = (arr, threshold = 0.25) => {
   return count/arr.length >= threshold;
 };
 
+const shuffleItems = (items) => {
+  const shuffled_items = items;
+  if (items.length > 1) {
+    while (checkArraySimilar(shuffled_items, 0.25)) {
+      shuffled_items.sort(() => Math.random() - 0.5);
+    };
+  };
+  return shuffled_items
+
+}
 
 const getItems = (instructions) => {
   let count = 0;
@@ -37,14 +48,7 @@ const getItems = (instructions) => {
     id: `${k}`,
     content: `${instructions[k]}`
   }))
-  const shuffled_arr = arr;
-
-  if (arr.length > 1) {
-    while (checkArraySimilar(shuffled_arr, 0.25)) {
-      shuffled_arr.sort(() => Math.random() - 0.5);
-    };
-  };
-  return shuffled_arr
+  return shuffleItems(arr);
 };
 
 
@@ -65,6 +69,7 @@ const getItemStyle = (isLocked,isDragging, draggableStyle) => ({
   userSelect: "none",
   padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
+  left: 100,
 
   // change background colour if dragging
   background: isLocked ? "#93C572" : 
@@ -91,18 +96,19 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     this.state = {
       jimuMapView: null,
       items: getItems(this.props.config.instructText),
-      isLocked: false
+      isLocked: false,
+      tries: 0
     };
     this.onDragEnd = this.onDragEnd.bind(this)
   }
 
   formSubmit = (evt) => {
     evt.preventDefault();
+    this.setState({tries: this.state.tries + 1})
     if (checkArraySimilar(this.state.items, 1.0)) {
       // create a new FeatureLayer
       const layer = new FeatureLayer({
         url: this.props.config.layerUrls // can only add 1 right now! 
-        //"https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/Simplified_Global_Elevation/FeatureServer"
       });
 
       // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
@@ -114,7 +120,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     else{
       window.alert("Try again!")
     }
-
   }
   
 
@@ -131,21 +136,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     );
 
     this.setState({items: items});
-
-    // if (checkArraySimilar(items, 1.0)) {
-    //   // create a new FeatureLayer
-    //   const layer = new FeatureLayer({
-    //     url: this.props.config.layerUrls // can only add 1 right now! 
-    //     //"https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/Simplified_Global_Elevation/FeatureServer"
-    //   });
-
-    //   // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
-    //   this.state.jimuMapView.view.map.add(layer);
-
-    //   // Lock the draggable area
-    //   this.setState({isLocked: true})
-    // }  
-
   };
   
 
@@ -165,52 +155,53 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
           <JimuMapViewComponent useMapWidgetId={this.props.useMapWidgetIds?.[0]} onActiveViewChange={this.activeViewChangeHandler} />
         )}
           <div>
-          <center>
-            <DragDropContext onDragEnd={result => this.onDragEnd(result)}>
-              <Droppable droppableId="droppable">
-                {(provided, snapshot) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    style={getListStyle(this.state.isLocked, snapshot.isDraggingOver)}
-                  >
-                    {this.state.items.map((item, index) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}
-                        isDragDisabled={this.state.isLocked}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(
-                              this.state.isLocked,
-                              snapshot.isDragging,
-                              provided.draggableProps.style
-                            )}
-                          >
-                            {item.content}
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-            </center>
+          <DragDropContext onDragEnd={result => this.onDragEnd(result)}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(this.state.isLocked, snapshot.isDraggingOver)}
+                >
+                  {getItems(this.props.config.instructText).map((item, index) => (
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}
+                      isDragDisabled={this.state.isLocked}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            this.state.isLocked,
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                          )}
+                        >
+                          {item.content}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
       </div>
-      <center>
-        <form onSubmit={this.formSubmit}>
-          <div>
-            <Button type="primary" style={{background: 'orange', color: "#ffffff"}} >Check Answer!</Button>
-            {this.state.isLocked && <p>Congrats! You got the right answer!</p>}
-          </div>
-        </form>
-        </center>
+      <form onSubmit={this.formSubmit}>
+        <div>
+          <Button type="primary" style={{background: 'orange', color: "#ffffff"}} >Check Answer!</Button>
+          {this.state.isLocked && <p>Congrats! You got the right answer!</p>}
+          {<p>Number of Tries: {this.state.tries}</p>}
+        </div>
+      </form>
+      <form>
+        <label>{this.props.config.instructText}</label>
+        <label>{String(this.props.config.textChange)}</label>
+      </form>
     </div>
     );
   }
