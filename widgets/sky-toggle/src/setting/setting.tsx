@@ -1,3 +1,22 @@
+/**
+  Licensing
+
+  Copyright 2022 Esri
+
+  Licensed under the Apache License, Version 2.0 (the "License"); You
+  may not use this file except in compliance with the License. You may
+  obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+  implied. See the License for the specific language governing
+  permissions and limitations under the License.
+
+  A copy of the license is available in the repository's
+  LICENSE file.
+*/
 import { React } from "jimu-core";
 import { AllWidgetSettingProps } from "jimu-for-builder";
 import {
@@ -9,7 +28,6 @@ import defaultI18nMessages from "./translations/default";
 import { IMConfig } from "../config";
 
 interface IState {
-  instructTextareaValue: string;
   layerTextareaValue: string;
 }
 
@@ -22,15 +40,10 @@ export default class Setting extends React.PureComponent<
 
     console.log(
       "TYPEOF undefined",
-      typeof this.props.config?.instructText === undefined,
       typeof this.props.config?.layerUrls === undefined
     );
 
     this.state = {
-      instructTextareaValue:
-        this.props.config?.instructText === undefined
-          ? ""
-          : this.props.config?.instructText.join("\n"),
       layerTextareaValue:
         this.props.config?.layerUrls === undefined
           ? ""
@@ -45,19 +58,7 @@ export default class Setting extends React.PureComponent<
     });
   };
 
-  onInstructTextChange = (event) => {
-    this.setState({ instructTextareaValue: event.target.value });
-
-    this.props.onSettingChange({
-      id: this.props.id,
-      config: this.props.config.set(
-        "instructText",
-        event.target.value.split("\n")
-      ),
-    });
-  };
-
-  onLayerTextChange = (event) => {
+  onTextChange = (event) => {
     this.setState({ layerTextareaValue: event.target.value });
 
     this.props.onSettingChange({
@@ -65,13 +66,14 @@ export default class Setting extends React.PureComponent<
       config: this.props.config.set(
         "layerUrls",
         event.target.value.split("\n")
+        // I think we are going to need to trigger the change here...
       ),
     });
   };
 
   render() {
     return (
-      <div className="input-instructions-in-text">
+      <div className="view-layers-toggle-setting">
         <SettingSection
           title={this.props.intl.formatMessage({
             id: "selectedMapLabel",
@@ -88,24 +90,8 @@ export default class Setting extends React.PureComponent<
 
         <SettingSection
           title={this.props.intl.formatMessage({
-            id: "instructions",
-            defaultMessage: defaultI18nMessages.instructions,
-          })}
-        >
-          <SettingRow>
-            <textarea
-              className="w-100 p-1"
-              style={{ whiteSpace: "nowrap", minHeight: "100px" }}
-              value={this.state.instructTextareaValue}
-              onChange={this.onInstructTextChange}
-            ></textarea>
-          </SettingRow>
-        </SettingSection>
-
-        <SettingSection
-          title={this.props.intl.formatMessage({
-            id: "toAdd",
-            defaultMessage: defaultI18nMessages.toAdd,
+            id: "layers",
+            defaultMessage: defaultI18nMessages.layers,
           })}
         >
           <SettingRow>
@@ -113,10 +99,12 @@ export default class Setting extends React.PureComponent<
               className="w-100 p-1"
               style={{ whiteSpace: "nowrap", minHeight: "100px" }}
               value={this.state.layerTextareaValue}
-              onChange={this.onLayerTextChange}
+              onChange={this.onTextChange}
             ></textarea>
           </SettingRow>
         </SettingSection>
+
+        
       </div>
     );
   }

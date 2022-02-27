@@ -26,7 +26,10 @@ const checkArraySimilar = (arr, threshold = 0.25) => {
 
 
 const getItems = (instructions) => {
-  let count = instructions.length;
+  let count = 0;
+  if (instructions != undefined){
+    count = instructions.length;
+  }
 
   const arr = Array.from({ length: count }, (v, k) => k).map((k) => ({
     // Id is the order the item SHOULD be in
@@ -97,11 +100,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
       //                   "Color tile shade of green",
       //                   "else",
       //                   "Color the tile a shade of gray"]),
-      items: getItems([ "For every square mile",
-                        "If elevation higher than 0",
-                        "Color tile shade of green",
-                        "else",
-                        "Color the tile a shade of gray"]),
+      items: getItems(this.props.config.instructText), // this works! 
       isLocked: false
     };
     this.onDragEnd = this.onDragEnd.bind(this)
@@ -125,7 +124,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     if (checkArraySimilar(items, 1.0)) {
       // create a new FeatureLayer
       const layer = new FeatureLayer({
-        url: "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/Simplified_Global_Elevation/FeatureServer"
+        url: this.props.config.layerUrls // can only add 1 right now! 
+        //"https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/Simplified_Global_Elevation/FeatureServer"
       });
 
       // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
@@ -190,6 +190,16 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
             </Droppable>
         </DragDropContext>
       </div>
+      <form>
+         <div>
+           <button>Check Answer!</button>
+         </div>
+       </form>
+      <form>
+          <label>{this.props.config.instructText}</label>
+          <label>-------</label>
+          <label>{this.props.config.layerUrls}</label>
+        </form>
     </div>
     );
   }

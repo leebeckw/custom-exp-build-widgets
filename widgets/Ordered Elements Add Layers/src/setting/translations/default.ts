@@ -1,4 +1,5 @@
 export default {
     selectedMap: "Map",
-    instructions: "Instructions"
+    instructions: "Instructions",
+    toAdd: "Layers to Add"
 }
