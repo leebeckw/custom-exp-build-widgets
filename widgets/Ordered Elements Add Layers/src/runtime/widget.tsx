@@ -37,18 +37,29 @@ const shuffleItems = (items) => {
 
 }
 
-const getItems = (instructions) => {
+const getItems = (instructions, checked) => {
   let count = 0;
   if (instructions != undefined){
     count = instructions.length;
   }
 
-  const arr = Array.from({ length: count }, (v, k) => k).map((k) => ({
+  let arr = Array.from({ length: count }, (v, k) => k).map((k) => ({
     // Id is the order the item SHOULD be in
     id: `${k}`,
     content: `${instructions[k]}`
   }))
-  return shuffleItems(arr);
+  
+  //return shuffleItems(arr);
+
+  // If the isChecked is true, the author is done inputting instructions
+  // return the array itself and STOP shuffling
+  if (checked == true){
+    return shuffleItems(arr);
+  }
+  else {
+    return arr;
+  }
+
 };
 
 
@@ -95,7 +106,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     super(props);
     this.state = {
       jimuMapView: null,
-      items: getItems(this.props.config.instructText),
+      items: getItems(this.props.config.instructText, this.props.config.isChecked),
       isLocked: false,
       tries: 0
     };
@@ -163,7 +174,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
                   ref={provided.innerRef}
                   style={getListStyle(this.state.isLocked, snapshot.isDraggingOver)}
                 >
-                  {getItems(this.props.config.instructText).map((item, index) => (
+                  {getItems(this.props.config.instructText, this.props.config.isChecked).map((item, index) => (
                     <Draggable
                       key={item.id}
                       draggableId={item.id}
@@ -200,7 +211,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
       </form>
       <form>
         <label>{this.props.config.instructText}</label>
-        <label>{String(this.props.config.textChange)}</label>
+        <label>{String(this.props.config.isChecked)}</label>
       </form>
     </div>
     );

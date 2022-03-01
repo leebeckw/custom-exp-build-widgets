@@ -5,7 +5,7 @@
                      "else",
                      "Color the tile a shade of gray"],
     "layerUrls": ["https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/Simplified_Global_Elevation/FeatureServer"],
-    "textChange": [true]
+    "isChecked": [false]
 
 }
 
