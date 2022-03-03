@@ -5,7 +5,7 @@ import {
   SettingRow,
   SettingSection,
 } from "jimu-ui/advanced/setting-components";
-import { Checkbox } from "jimu-ui";
+import { Button } from "jimu-ui";
 import defaultI18nMessages from "./translations/default";
 import { IMConfig } from "../config";
 
@@ -25,7 +25,7 @@ export default class Setting extends React.PureComponent<
       "TYPEOF undefined",
       typeof this.props.config?.instructText === undefined,
       typeof this.props.config?.layerUrls === undefined,
-      typeof this.props.config?.isChecked === undefined,
+      typeof this.props.config?.isClicked === undefined,
     );
 
     this.state = {
@@ -37,7 +37,6 @@ export default class Setting extends React.PureComponent<
         this.props.config?.layerUrls === undefined
           ? ""
           : this.props.config?.layerUrls.join("\n"),
-      isChecked: this.props.config.isChecked
     };
   }
 
@@ -60,15 +59,12 @@ export default class Setting extends React.PureComponent<
     });
   };
 
-  onCheckboxChange = (event) => {
-    let newCheck = !this.state.isChecked;
-    this.setState({ isChecked: newCheck });
-
+  onButtonClick = (event) => {
     this.props.onSettingChange({
       id: this.props.id,
       config: this.props.config.set(
-        "isChecked",
-        newCheck
+        "isClicked",
+        true
       ),
     });
   };
@@ -117,14 +113,11 @@ export default class Setting extends React.PureComponent<
             ></textarea>
           </SettingRow>
           <SettingRow>
-            <label>
-              Done inputting instructions: 
-              <Checkbox
-                aria-label="Checkbox"
-                checked={this.state.isChecked}
-                onChange={this.onCheckboxChange}
-              />
-            </label>
+            <Button
+              onClick={this.onButtonClick}
+            >
+              Update Instructions
+            </Button>
           </SettingRow>
         </SettingSection>
 

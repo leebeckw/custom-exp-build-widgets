@@ -27,7 +27,7 @@ const checkArraySimilar = (arr, threshold = 0.25) => {
 };
 
 const shuffleItems = (items) => {
-  const shuffled_items = items;
+  let shuffled_items = items;
   if (items.length > 1) {
     while (checkArraySimilar(shuffled_items, 0.25)) {
       shuffled_items.sort(() => Math.random() - 0.5);
@@ -36,31 +36,6 @@ const shuffleItems = (items) => {
   return shuffled_items
 
 }
-
-const getItems = (instructions, checked) => {
-  let count = 0;
-  if (instructions != undefined){
-    count = instructions.length;
-  }
-
-  let arr = Array.from({ length: count }, (v, k) => k).map((k) => ({
-    // Id is the order the item SHOULD be in
-    id: `${k}`,
-    content: `${instructions[k]}`
-  }))
-  
-  //return shuffleItems(arr);
-
-  // If the isChecked is true, the author is done inputting instructions
-  // return the array itself and STOP shuffling
-  if (checked == true){
-    return shuffleItems(arr);
-  }
-  else {
-    return arr;
-  }
-
-};
 
 
 // a little function to help us with reordering the result
@@ -106,32 +81,78 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     super(props);
     this.state = {
       jimuMapView: null,
-      items: getItems(this.props.config.instructText, this.props.config.isChecked),
+      items: this.initalizeItems(),
       isLocked: false,
       tries: 0
     };
     this.onDragEnd = this.onDragEnd.bind(this)
   }
 
+
   formSubmit = (evt) => {
     evt.preventDefault();
     this.setState({tries: this.state.tries + 1})
+
     if (checkArraySimilar(this.state.items, 1.0)) {
-      // create a new FeatureLayer
-      const layer = new FeatureLayer({
-        url: this.props.config.layerUrls // can only add 1 right now! 
-      });
 
-      // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
-      this.state.jimuMapView.view.map.add(layer);
+      try{
+        // create a new FeatureLayer
+        const layer = new FeatureLayer({
+          url: this.props.config.layerUrls // can only add 1 right now! 
+        });
 
-      // Lock the draggable area
-      this.setState({isLocked: true})
+        // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
+        this.state.jimuMapView.view.map.add(layer);
+      }
+      finally {
+        // Lock the draggable area
+        this.setState({isLocked: true})
+      }
     }
+
     else{
       window.alert("Try again!")
     }
   }
+
+  initalizeItems(){
+    this.props.config.isClicked = false;
+
+      let count = 0;
+      let instructions = this.props.config.instructText;
+  
+      if (instructions != undefined){
+        count = instructions.length;
+      }
+    
+      let arr = Array.from({ length: count }, (v, k) => k).map((k) => ({
+        // Id is the order the item SHOULD be in
+        id: `${k}`,
+        content: `${instructions[k]}`
+      }))
+    
+      let shuffledArr = shuffleItems(arr);
+
+      return shuffledArr;
+  }
+
+  getItems() {
+    if (this.props.config.isClicked) {
+    
+      let shuffledArr = this.initalizeItems();
+
+      try {
+        this.setState({items: shuffledArr})
+      }
+      finally {
+        return shuffledArr;
+      }
+    }
+
+    else {
+      return this.state.items;
+    }
+  };
   
 
   onDragEnd(result) {
@@ -174,7 +195,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
                   ref={provided.innerRef}
                   style={getListStyle(this.state.isLocked, snapshot.isDraggingOver)}
                 >
-                  {getItems(this.props.config.instructText, this.props.config.isChecked).map((item, index) => (
+                  {this.getItems().map((item, index) => (
                     <Draggable
                       key={item.id}
                       draggableId={item.id}
@@ -208,10 +229,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
           {this.state.isLocked && <p>Congrats! You got the right answer!</p>}
           {<p>Number of Tries: {this.state.tries}</p>}
         </div>
-      </form>
-      <form>
-        <label>{this.props.config.instructText}</label>
-        <label>{String(this.props.config.isChecked)}</label>
       </form>
     </div>
     );

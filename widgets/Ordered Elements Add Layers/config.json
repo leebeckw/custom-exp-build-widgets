@@ -1,11 +1,7 @@
 {
-    "instructText": ["For every square mile",
-                     "If elevation higher than 0",
-                     "Color tile shade of green",
-                     "else",
-                     "Color the tile a shade of gray"],
-    "layerUrls": ["https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/Simplified_Global_Elevation/FeatureServer"],
-    "isChecked": [false]
+    "instructText": ["Enter in your instructions. Separate with a new line."],
+    "layerUrls": ["Enter in your layer URL"],
+    "isClicked": true
 
 }
 
