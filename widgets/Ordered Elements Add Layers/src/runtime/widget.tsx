@@ -29,7 +29,7 @@ const checkArraySimilar = (arr, threshold = 0.25) => {
 const shuffleItems = (items) => {
   let shuffled_items = items;
   if (items.length > 1) {
-    while (checkArraySimilar(shuffled_items, 0.25)) {
+    while (checkArraySimilar(shuffled_items, 0.50)) {
       shuffled_items.sort(() => Math.random() - 0.5);
     };
   };
