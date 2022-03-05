@@ -35,7 +35,7 @@ export default class Setting extends React.PureComponent<
 
       this.state = {
         /**
-         * Initialize the settings panel ionterface
+         * Initialize the settings panel interface
          */
         instructTextareaValue:
           this.props.config?.instructText === undefined
