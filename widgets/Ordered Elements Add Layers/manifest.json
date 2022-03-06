@@ -1,17 +1,18 @@
 {
-  "name": "sky-DnD",
+  "name": "Ordered Elements Add Layers",
   "type": "widget",
   "version": "1.7.0",
+  "dependency": "jimu-arcgis",
   "exbVersion": "1.7.0",
-  "author": "Skylar Gering",
-  "description": "A drag and drop widget",
+  "author": "Your Name",
+  "description": "A hello world starter widget",
   "copyright": "",
   "license": "",
   "properties": {},
   "translatedLocales": ["en"],
   "defaultSize": {
-    "width": 200,
-    "height": 125
+    "width": 250,
+    "height": 600
   }
 }
 
