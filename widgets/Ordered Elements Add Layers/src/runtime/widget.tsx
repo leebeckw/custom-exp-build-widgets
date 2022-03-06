@@ -174,14 +174,17 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     evt.preventDefault();
     this.setState({tries: this.state.tries + 1});   // increase number of tries
 
-    if (checkArraySimilar(this.state.items, 1.0)) {  // if items in original order
+    if (checkArraySimilar(this.state.items, 1.0)) {  // loop through all URLS in text box
       try{
-        // create a new FeatureLayer
-        const layer = new FeatureLayer({
-          url: this.props.config.layerUrls // can only add 1 right now! 
-        });
-        // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
-        this.state.jimuMapView.view.map.add(layer);
+        let urlList = this.props.config.layerUrls;
+        for (var i = 0; i< urlList.length; i++) {
+          // create a new FeatureLayer
+          const layer = new FeatureLayer({
+            url: this.props.config.layerUrls[i] // adds all layers at once
+          });
+          // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
+          this.state.jimuMapView.view.map.add(layer);
+        }
       }
       finally {
         this.setState({isLocked: true})  // Lock the draggable area
