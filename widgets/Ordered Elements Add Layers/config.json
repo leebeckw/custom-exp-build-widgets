@@ -1,7 +1,7 @@
 {
     "instructText": ["Enter in your instructions. Separate with a new line."],
-    "layerUrls": ["Enter in your layer URL"],
-    "isClicked": true
-
+    "layerUrls": ["Enter in your layer URL(s)"],
+    "isClicked": true,
+    "codeText": "<p></p>"
 }
 
