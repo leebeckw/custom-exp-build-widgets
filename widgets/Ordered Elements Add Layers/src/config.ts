@@ -5,6 +5,7 @@ export interface Config {
     layerUrls: Array<string>;
     isClicked: Boolean;
     codeText: string;
+    isChecked: Boolean;
 }
 
 export type IMConfig = ImmutableObject<Config>;

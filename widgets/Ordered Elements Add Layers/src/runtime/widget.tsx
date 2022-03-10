@@ -279,7 +279,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
             {<p>Number of Tries: {this.state.tries}</p>}
           </div>
         </form>  
-        <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.props.config.codeText)}}></div>           
+        {(this.props.config.isChecked || this.state.isLocked) && <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.props.config.codeText)}}></div>}           
       </div>
     );
   }
