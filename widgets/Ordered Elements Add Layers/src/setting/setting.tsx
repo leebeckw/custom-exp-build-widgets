@@ -1,11 +1,12 @@
 import { React } from "jimu-core";
+import { Component } from 'react';
 import { AllWidgetSettingProps } from "jimu-for-builder";
 import {
   MapWidgetSelector,
   SettingRow,
   SettingSection,
 } from "jimu-ui/advanced/setting-components";
-import { Button } from "jimu-ui";
+import { Button, Checkbox } from "jimu-ui";
 import defaultI18nMessages from "./translations/default";
 import { IMConfig } from "../config";
 
@@ -13,11 +14,12 @@ import { IMConfig } from "../config";
 interface IState {
   /**
    * Settings interface panel
-   * The panel will include a section for inputting instruction text, and URL for the map
+   * The panel will include a section for inputting instruction text, URL for the map, and HTML
    */
   
   instructTextareaValue: string;
   layerTextareaValue: string;
+  codeTextareaValue: string;
 }
 
 export default class Setting extends React.PureComponent<
@@ -31,6 +33,7 @@ export default class Setting extends React.PureComponent<
         typeof this.props.config?.instructText === undefined,
         typeof this.props.config?.layerUrls === undefined,
         typeof this.props.config?.isClicked === undefined,
+        typeof this.props.config?.codeText === undefined
       );
 
       this.state = {
@@ -45,6 +48,10 @@ export default class Setting extends React.PureComponent<
           this.props.config?.layerUrls === undefined
             ? ""
             : this.props.config?.layerUrls.join("\n"),
+        codeTextareaValue:
+          this.props.config?.codeText === undefined
+            ? ""
+            : this.props.config?.codeText,
       };
     }
 
@@ -113,6 +120,40 @@ export default class Setting extends React.PureComponent<
     });
   };
 
+  onCodeTextChange = (event) => {
+    /**
+     * In the code text area, author should input HTML code
+     * for code pop-up
+     */
+
+    this.setState({ codeTextareaValue: event.target.value });
+
+    this.props.onSettingChange({
+      id: this.props.id,
+      config: this.props.config.set(
+        "codeText",
+        event.target.value
+      ),
+    });
+  };
+
+  onCheckChange = (event) => {
+    /**
+     * Under the code text area, author clicks the checkbox
+     * to set initial code visibility. Code is visible when checkbox is checked
+     */
+
+    let checkStatus = this.props.config.isChecked
+
+     this.props.onSettingChange({
+       id: this.props.id,
+       config: this.props.config.set(
+         "isChecked",
+         !checkStatus
+       ),
+     });
+  }
+
 
   render() {
     return (
@@ -142,7 +183,7 @@ export default class Setting extends React.PureComponent<
           })}
         >
 
-          {/* Render text input area for isntructions */}
+          {/* Render text input area for instructions */}
           <SettingRow>
             <textarea
               className="w-100 p-1"
@@ -168,7 +209,6 @@ export default class Setting extends React.PureComponent<
             defaultMessage: defaultI18nMessages.toAdd,
           })}
         >
-
           {/* Render text input area to add URL to map layer */}
           <SettingRow>
             <textarea
@@ -177,6 +217,34 @@ export default class Setting extends React.PureComponent<
               value={this.state.layerTextareaValue}
               onChange={this.onLayerTextChange}
             ></textarea>
+          </SettingRow>
+        </SettingSection>
+
+        <SettingSection
+          title={this.props.intl.formatMessage({
+            id: "codeArea",
+            defaultMessage: defaultI18nMessages.codeArea,
+          })}
+        >
+          {/* Render text input area to add HTML */}
+          <SettingRow>
+            <textarea
+              className="w-100 p-1"
+              style={{ whiteSpace: "pre", minHeight: "100px" }}
+              value={this.state.codeText}
+              onChange={this.onCodeTextChange}
+            ></textarea>
+          </SettingRow>
+
+          {/* Set default code visibility */}
+          <SettingRow>
+            <label>
+              Set code default visibility:&nbsp;
+              <Checkbox
+                checked={this.props.config.isChecked}
+                onChange={this.onCheckChange}
+              />
+            </label>
           </SettingRow>
         </SettingSection>
       </div>

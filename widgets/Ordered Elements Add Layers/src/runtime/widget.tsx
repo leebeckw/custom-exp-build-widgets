@@ -6,6 +6,7 @@ import { JimuMapViewComponent, JimuMapView } from "jimu-arcgis";
 import { React, AllWidgetProps, jsx } from "jimu-core";
 import { Button } from 'jimu-ui';
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import DOMPurify from "dompurify"; 
 
 const checkArraySimilar = (arr, threshold = 0.25) => {
   /*
@@ -277,7 +278,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
             {this.state.isLocked && <p>Congrats! You got the right answer!</p>}
             {<p>Number of Tries: {this.state.tries}</p>}
           </div>
-        </form>
+        </form>  
+        {(this.props.config.isChecked || this.state.isLocked) && <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.props.config.codeText)}}></div>}           
       </div>
     );
   }
