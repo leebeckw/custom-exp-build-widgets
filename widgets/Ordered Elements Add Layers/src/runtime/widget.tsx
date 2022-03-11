@@ -127,7 +127,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
       isLocked: false,
       tries: 0
     };
-    this.onDragEnd = this.onDragEnd.bind(this)
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   initalizeItems(){

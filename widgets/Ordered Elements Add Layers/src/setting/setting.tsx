@@ -50,7 +50,7 @@ export default class Setting extends React.PureComponent<
             : this.props.config?.layerUrls.join("\n"),
         codeTextareaValue:
           this.props.config?.codeText === undefined
-            ? ""
+            ? "<code></code>"
             : this.props.config?.codeText,
       };
     }
@@ -231,7 +231,7 @@ export default class Setting extends React.PureComponent<
             <textarea
               className="w-100 p-1"
               style={{ whiteSpace: "pre", minHeight: "100px" }}
-              value={this.state.codeText}
+              value={this.state.codeTextareaValue}
               onChange={this.onCodeTextChange}
             ></textarea>
           </SettingRow>

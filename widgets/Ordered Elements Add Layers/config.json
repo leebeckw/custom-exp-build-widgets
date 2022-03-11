@@ -1,6 +1,6 @@
 {
     "instructText": ["Enter in your instructions. Separate with a new line."],
-    "layerUrls": ["Enter in your layer URL(s)"],
+    "layerUrls": ["Enter in your layer URL(s)."],
     "isClicked": true,
     "codeText": "<code></code>",
     "isChecked": true
