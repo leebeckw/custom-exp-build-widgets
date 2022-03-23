@@ -1,0 +1,4 @@
+{
+    "dropdownOptions": ["Enter in the dropdown options. Separate with a new line. Note: correct answer should be first."],
+    "updateDropdown": false
+}
