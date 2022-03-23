@@ -104,3 +104,8 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Miscellaneous test widgets
+demo-function-2/
+message-subscriber/
+redux-copy/
