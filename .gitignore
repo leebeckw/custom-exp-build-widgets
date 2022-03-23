@@ -106,6 +106,7 @@ dist
 .tern-port
 
 # Miscellaneous test widgets
-demo-function-2/
-message-subscriber/
-redux-copy/
+widgets/demo-function-2/
+widgets/view-layers-toggle-2/
+widgets/message-subscriber/
+widgets/redux-copy/
