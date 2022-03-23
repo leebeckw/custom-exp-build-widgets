@@ -6,6 +6,7 @@ import { JimuMapViewComponent, JimuMapView } from "jimu-arcgis";
 import { React, AllWidgetProps, jsx } from "jimu-core";
 import { Button } from 'jimu-ui';
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import DOMPurify from "dompurify"; 
 
 const checkArraySimilar = (arr, threshold = 0.25) => {
   /*
@@ -126,7 +127,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
       isLocked: false,
       tries: 0
     };
-    this.onDragEnd = this.onDragEnd.bind(this)
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   initalizeItems(){
@@ -174,14 +175,17 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     evt.preventDefault();
     this.setState({tries: this.state.tries + 1});   // increase number of tries
 
-    if (checkArraySimilar(this.state.items, 1.0)) {  // if items in original order
+    if (checkArraySimilar(this.state.items, 1.0)) {  // loop through all URLS in text box
       try{
-        // create a new FeatureLayer
-        const layer = new FeatureLayer({
-          url: this.props.config.layerUrls // can only add 1 right now! 
-        });
-        // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
-        this.state.jimuMapView.view.map.add(layer);
+        let urlList = this.props.config.layerUrls;
+        for (var i = 0; i< urlList.length; i++) {
+          // create a new FeatureLayer
+          const layer = new FeatureLayer({
+            url: this.props.config.layerUrls[i] // adds all layers at once
+          });
+          // Add the layer to the map (accessed through the Experience Builder JimuMapView data source)
+          this.state.jimuMapView.view.map.add(layer);
+        }
       }
       finally {
         this.setState({isLocked: true})  // Lock the draggable area
@@ -274,7 +278,8 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
             {this.state.isLocked && <p>Congrats! You got the right answer!</p>}
             {<p>Number of Tries: {this.state.tries}</p>}
           </div>
-        </form>
+        </form>  
+        {(this.props.config.isChecked || this.state.isLocked) && <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.props.config.codeText)}}></div>}           
       </div>
     );
   }
