@@ -187,7 +187,7 @@ export default class Setting extends React.PureComponent<
           <SettingRow>
             <textarea
               className="w-100 p-1"
-              style={{ whiteSpace: "nowrap", minHeight: "100px" }}
+              style={{ whiteSpace: "pre", minHeight: "100px" }}
               value={this.state.instructTextareaValue}
               onChange={this.onInstructTextChange}
             ></textarea>
@@ -213,7 +213,7 @@ export default class Setting extends React.PureComponent<
           <SettingRow>
             <textarea
               className="w-100 p-1"
-              style={{ whiteSpace: "nowrap", minHeight: "100px" }}
+              style={{ whiteSpace: "pre", minHeight: "100px" }}
               value={this.state.layerTextareaValue}
               onChange={this.onLayerTextChange}
             ></textarea>
