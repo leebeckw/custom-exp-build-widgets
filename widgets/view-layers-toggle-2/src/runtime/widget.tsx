@@ -30,7 +30,7 @@ interface IState {
   featureLayerOnMap: FeatureLayer;
 }
 
-export default class ViewLayersToggle extends React.PureComponent<
+export default class ViewLayersToggle2 extends React.PureComponent<
   AllWidgetProps<IMConfig>,
   IState
 > {
@@ -72,7 +72,7 @@ export default class ViewLayersToggle extends React.PureComponent<
   render() {
     return (
       <div
-        className="widget-view-layers-toggle jimu-widget"
+        className="widget-view-layers-toggle-2 jimu-widget"
         style={{ overflow: "auto" }}
       >
         {this.props.hasOwnProperty("useMapWidgetIds") &&
@@ -95,11 +95,11 @@ export default class ViewLayersToggle extends React.PureComponent<
             onChange={(evt) => {
               this.selectChangeHandler(evt);
             }}
-            style={{ maxWidth: "50%" }}
+            style={{ maxWidth: "100%" }}
           >
-            <option value="test string"></option>
-            {this.props.config.layerUrls.map((url) => {
-              return <option value={url}>{url}</option>;
+            <option value=""></option>
+            {this.props.config.layerUrls.map((a) => {
+              return <option value={a.url}>{a.txt}</option>;
             })}
           </select>
         </p>

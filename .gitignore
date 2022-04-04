@@ -104,3 +104,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Miscellaneous test widgets
+widgets/demo-function-2/
+widgets/view-layers-toggle-2/
+widgets/message-subscriber/
+widgets/redux-copy/

@@ -1,0 +1,8 @@
+{
+  "layerUrls": [
+    {"url": "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Earthquakes_Since1970/MapServer/0", "txt": "earthquake1"},
+    {"url": "https://sampleserver6.arcgisonline.com/arcgis/rest/services/SampleWorldCities/MapServer/0", "txt": "earthquake2"},
+    {"url": "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/cables/FeatureServer", "txt": "cables"},
+    {"url": "https://services3.arcgis.com/GzteEaZqBuJ6GIYr/arcgis/rest/services/landing_points/FeatureServer", "txt": "landing points"}
+  ]
+}

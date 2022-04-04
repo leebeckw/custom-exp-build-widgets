@@ -30,11 +30,15 @@ export default function Widget(props: AllWidgetProps<IMConfig> & ExtraProps) {
   return <div className="widget-demo-function jimu-widget" style={{ overflow: 'auto' }}>
     <Dropdown>
     <DropdownButton>
-      Dropdown
+      dropdown test
     </DropdownButton>
     <DropdownMenu>
+      <DropdownItem>choice 1</DropdownItem>
+      <DropdownItem>choice 2</DropdownItem>
+      <DropdownItem>choice 3</DropdownItem>
+      <DropdownItem>choice 4</DropdownItem>
     </DropdownMenu>
-  </Dropdown>
+    </Dropdown>
   </div>;
 }
 
