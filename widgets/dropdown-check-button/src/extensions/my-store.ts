@@ -1,4 +1,5 @@
 import { extensionSpec, ImmutableObject, IMState } from 'jimu-core';
+/* Setting up Redux extension that is also accessed by the dropdown-widget */
 
 export enum MyActionKeys {
   MyAction1 = 'MY_ACTION_1'

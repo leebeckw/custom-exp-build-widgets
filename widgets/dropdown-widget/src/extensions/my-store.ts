@@ -1,5 +1,6 @@
 import intl from 'esri/intl';
 import { extensionSpec, ImmutableObject, IMState } from 'jimu-core';
+/* Setting up Redux extension that is also accessed by the dropdown-check-button */
 
 export enum MyActionKeys {
   MyAction1 = 'MY_ACTION_1'
@@ -47,32 +48,18 @@ export default class MyReduxStoreExtension implements extensionSpec.ReduxStoreEx
   getReducer() {
     return (localState: IMMyState, action: ActionTypes, appState: IMState): IMMyState => {
       switch (action.type) {
+        // when a dropdown answer is selected this case runs
         case MyActionKeys.MyAction1:
-          // this needs to be an iterable
+          // gets the index in the array of the specific dropdown that is being changed
           const index = localState.a.findIndex(dropdown => dropdown.id === action.widgetID);
           console.log(index);
-          // PUSH CASE --> different updater
+          // PUSH CASE --> if this is the first time the dropdown is changed, push a DropdownObject onto the array
           if (index === -1) {
-            //return localState;
-            // need a collection, iterable, updater function (see https://immutable-js.com/docs/v4.0.0/updateIn()/)
             const toAdd : DropdownObject = {"id": action.widgetID, "val": action.dropdownValue};
-            console.log("PUSHING", action.widgetID, action.dropdownValue)
-            console.log("OLD ARRAY", localState.a)
             return localState.updateIn(['a'], arr => arr.concat(toAdd));
-            /*  return {localState.a: [...localState.a, {"id": action.widgetID, "val": action.val}]}
-                return { list: [...state.list, action.payload.item]};
-                return [...localState.a, {"id": action.widgetID, "val": action.val}];
-                need to localState.set --> requires a function to overload (set) but would it be set??
-                because localState is immutable
-                might need something similar for obj.val */
           }
-          // MODIFY CASE --> different updater
+          // MODIFY CASE --> if this is not the first time the dropdown is changed, modify the DropdownObject
           else {
-            // let obj = localState.a[index];
-            // obj.val = action.val;
-            // const toUpdate : DropdownObject = {"id": action.widgetID, "val": action.val};
-            console.log("UPDATING", action.widgetID, action.dropdownValue)
-            console.log("OLD ARRAY", localState.a)
             return localState.setIn(['a', index, "val"], action.dropdownValue);
           }
           // return localState;

@@ -25,7 +25,6 @@ import DropdownObject from '../extensions/my-store'
 const shuffleItems = (items) => {
   /*
    * Shuffles all items provided and returns them in shuffled order.
-   * The shuffled array must be at least 50% different from original array
    *
    * Inputs
    *    items <[dict]> each item is a dictionary with id and content keys
@@ -46,7 +45,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     this.state = {
       items: this.initializeItems(),
       updateDropdown: false,
-      // tries: 0
     };
   }
 
@@ -61,14 +59,14 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
   initializeItems(){
     /*
      * Creates items based in the text in the configuration variable
-     * called instructText (this.props.config.instructText)
+     * called dropdownOptions
      */
     this.props.config.updateDropdown = false;  // resets button in settings panel
     let count = 0;
     let dropdownOptions = this.props.config.dropdownOptions;  // text to make into items
   
     if (dropdownOptions != undefined){
-      count = dropdownOptions.length;  // if instructText is not an empty string
+      count = dropdownOptions.length;  // if dropdownOptions is not an empty string
     }
 
     let arr = Array.from({ length: count }, (v, k) => k).map((k) => ({
@@ -95,6 +93,9 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
     }
   };
 
+  // this function is called when the dropdown is changed
+  // it passes information to the Redux reducer where the
+  // information is then stored and used by check-dropdown-button
   onChange = (evt) => {
     const valueConst = evt.target.value;
     this.props.dispatch({
@@ -102,7 +103,6 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
       widgetID: this.props.id,
       dropdownValue: valueConst,
     });
-    // console.log("VALUE:", evt.target.value);
   }
 
   render() {

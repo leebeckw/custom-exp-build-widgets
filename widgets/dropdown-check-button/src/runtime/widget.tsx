@@ -40,25 +40,38 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
       tries: 0
     };
   }
+
   /**
-   * Map the state your widget needs
+   * Map the state the widget needs
    * @param state
    */
   static mapExtraStateProps(state: IMState){
     return {a: state.myState.a};
   }
 
-  // will say "right answer" even if not all have been touched
+  /**
+   * Function that checks whether all of the dropdown answers are correct.
+   * It is triggered when the "Check Answers" button is clicked.
+   * @param evt 
+   */
   checkAnswers = (evt) => {
+    // increase number of tries
     this.setState({tries: this.state.tries + 1});
+    // make sure that at least some answers have been selected
     const totalAnswers = this.props.a.length;
     var count = 0;
+    // loop through array of dropdown answers, check if they are right
     this.props.a.forEach(function(ddObj) {
+      // the correct dropdown answers have "val" of 0
       if (ddObj["val"] === "0") {
         count++;
         console.log("count", count);
       }
     });
+    // if the answers are correct, load layers on map
+    // note: there is no check to make sure all the dropdowns have answers
+    // so this would load the layer as long as all of the dropdowns that
+    // have answers are correct...
     if (totalAnswers > 0 && count === totalAnswers) {
       this.setState({correct: true});
       let urlList = this.props.config.layerUrls;
@@ -71,6 +84,7 @@ export default class Widget extends React.PureComponent<AllWidgetProps<IMConfig>
         this.state.jimuMapView.view.map.add(layer);
       }
     }
+    // if wrong, show an alert
     else {
       this.setState({correct: false});
       window.alert("Try again!");
