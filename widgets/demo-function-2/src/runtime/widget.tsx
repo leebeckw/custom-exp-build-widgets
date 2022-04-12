@@ -18,15 +18,21 @@
   LICENSE file.
 */
 import { AllWidgetProps, React, IMState, FormattedMessage } from 'jimu-core';
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from 'jimu-ui';
+// import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from 'jimu-ui';
 import { IMConfig } from '../config';
-import defaultMessage from './translations/default';
+// import defaultMessage from './translations/default';
 
 interface ExtraProps {
   locale: string;
 }
 
 export default function Widget(props: AllWidgetProps<IMConfig> & ExtraProps) {
+  return <div className="widget-demo-function jimu-widget" style={{ overflow: 'auto' }}>
+    {myState.a}
+  </div>;
+}
+
+/* export default function Widget(props: AllWidgetProps<IMConfig> & ExtraProps) {
   return <div className="widget-demo-function jimu-widget" style={{ overflow: 'auto' }}>
     <Dropdown>
     <DropdownButton>
@@ -40,7 +46,7 @@ export default function Widget(props: AllWidgetProps<IMConfig> & ExtraProps) {
     </DropdownMenu>
     </Dropdown>
   </div>;
-}
+} */
 
 Widget.mapExtraStateProps = (state: IMState, ownProps: AllWidgetProps<IMConfig>): ExtraProps => {
   return {

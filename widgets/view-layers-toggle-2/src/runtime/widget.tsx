@@ -64,7 +64,7 @@ export default class ViewLayersToggle2 extends React.PureComponent<
       }
     } else {
       console.error(
-        "You probably need to choose you map in the settings panel."
+        "You probably need to choose your map in the settings panel."
       );
     }
   };
