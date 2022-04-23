@@ -5,4 +5,4 @@ _created as part of the Esri Clinic Project 2021-2022_
 
 [Dropdown List Widget](/widgets/dropdown-widget)
 
-[Dropdown Check Answer Widget](/widgets/dropdown-check-answer)
+[Dropdown Check Answer Widget](/widgets/dropdown-check-button)
